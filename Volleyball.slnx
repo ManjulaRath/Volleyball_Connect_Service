@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Volleyball.Api/Volleyball.Api.csproj" />
+    <Project Path="src/Volleyball.Application/Volleyball.Application.csproj" />
+    <Project Path="src/Volleyball.Domain/Volleyball.Domain.csproj" />
+    <Project Path="src/Volleyball.Infrastructure/Volleyball.Infrastructure.csproj" />
+  </Folder>
+</Solution>

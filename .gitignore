@@ -1,0 +1,10 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/src/Volleyball.Api/obj
+/.vs
+/src/Volleyball.Api/bin/Debug/net10.0
+/src/Volleyball.Application/bin/Debug/net10.0
+**/bin/
+**/obj/
