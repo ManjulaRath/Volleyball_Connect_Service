@@ -1,5 +1,7 @@
 using System.Linq;
 using System.Threading.Tasks;
+using QRCoder;
+using System.IO;
 using Volleyball.Application.Interfaces;
 using Volleyball.Domain.Entities;
 
@@ -10,7 +12,31 @@ namespace Volleyball.Application.Services
         private readonly IPlayerRepository _repo;
         public PlayerService(IPlayerRepository repo) { _repo = repo; }
 
-        public async Task RegisterAsync(Player p) => await _repo.AddAsync(p);
+        public async Task RegisterAsync(Player p)
+        {
+            // generate a simple registration number if not provided
+            if (string.IsNullOrEmpty(p.RegistrationNumber))
+            {
+                p.RegistrationNumber = $"REG-{System.DateTime.UtcNow:yyyyMMddHHmmss}-{System.Guid.NewGuid().ToString().Substring(0, 6).ToUpper()}";
+            }
+
+            // generate QR code as base64 PNG and store in QrCode property
+            try
+            {
+                using var qrGenerator = new QRCodeGenerator();
+                using var qrData = qrGenerator.CreateQrCode(p.RegistrationNumber, QRCodeGenerator.ECCLevel.Q);
+                var png = new PngByteQRCode(qrData).GetGraphic(20);
+                var base64 = Convert.ToBase64String(png);
+                p.QrCode = $"data:image/png;base64,{base64}";
+            }
+            catch
+            {
+                // on any QR generation failure, leave QrCode empty
+                p.QrCode = string.Empty;
+            }
+
+            await _repo.AddAsync(p);
+        }
 
         public IQueryable<Player> Search(string? q, string? position, string? gender, int? minAge, int? maxAge)
         {

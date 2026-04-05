@@ -32,7 +32,14 @@ namespace Volleyball.Api.Controllers
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);
-            return Ok(new { token = tokenHandler.WriteToken(token) });
+            // Return token and safe user info (exclude password hash)
+            var userDto = new {
+                id = user.Id,
+                userName = user.UserName,
+                role = user.Role,
+                createdAt = user.CreatedAt
+            };
+            return Ok(new { token = tokenHandler.WriteToken(token), user = userDto });
         }
     }
 
